@@ -1,0 +1,10 @@
+Model name,Technique,Counterexample,Specification,Extracted DFA size,Total Time
+scc2034_kilifi_all_contacts_within_households,Abstraction-based,"('E2', 'E23')","77 states, 76 final states and 75 letters.",178,620.3059306144714
+scc2034_kilifi_all_contacts_within_households,PDV,"('E2', 'E23')","77 states, 76 final states and 75 letters.",3,0.02701568603515625
+scc2034_kilifi_all_contacts_within_households,,,"77 states, 76 final states and 75 letters.",,
+tij_SFHH,Abstraction-based,"('1467', '1467')","405 states, 404 final states and 403 letters.",38,876.1977529525757
+tij_SFHH,PDV,"('1467', '1467')","405 states, 404 final states and 403 letters.",1,0.3373987674713135
+tij_SFHH,,,"405 states, 404 final states and 403 letters.",,
+tij_InVS15,Abstraction-based,"('574', '779')","219 states, 218 final states and 217 letters.",87,621.4489243030548
+tij_InVS15,PDV,"('574', '447')","219 states, 218 final states and 217 letters.",2,1.119086503982544
+tij_InVS15,,,"219 states, 218 final states and 217 letters.",,

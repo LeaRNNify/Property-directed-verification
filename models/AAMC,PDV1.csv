@@ -1,0 +1,19 @@
+Model name,Technique,Counterexample,Specification,Extracted DFA size,Total Time
+tij_InVS,Abstraction-based,"('492', '164')","94 states, 93 final states and 92 letters.",111,604.983085870743
+tij_InVS,PDV,"('938', '938')","94 states, 93 final states and 92 letters.",2,0.077865600585938
+tij_InVS,,,"94 states, 93 final states and 92 letters.",,
+highschool_2011,Abstraction-based,"('26', '26')","128 states, 127 final states and 126 letters.",91,627.309012174606
+highschool_2011,PDV,"('26', '26')","128 states, 127 final states and 126 letters.",1,0.109812021255493
+highschool_2011,,,"128 states, 127 final states and 126 letters.",,
+detailed_list_of_contacts_Hospital,Abstraction-based,"('1157', '1157')","77 states, 76 final states and 75 letters.",36,614.766008615494
+detailed_list_of_contacts_Hospital,PDV,"('1157', '1157')","77 states, 76 final states and 75 letters.",1,0.006651163101196
+detailed_list_of_contacts_Hospital,,,"77 states, 76 final states and 75 letters.",,
+scc2034_kilifi_all_contacts_within_households,Abstraction-based,"('E2', 'E23')","77 states, 76 final states and 75 letters.",178,620.305930614471
+scc2034_kilifi_all_contacts_within_households,PDV,"('E2', 'E23')","77 states, 76 final states and 75 letters.",3,0.027015686035156
+scc2034_kilifi_all_contacts_within_households,,,"77 states, 76 final states and 75 letters.",,
+tij_SFHH,Abstraction-based,"('1467', '1467')","405 states, 404 final states and 403 letters.",38,876.197752952576
+tij_SFHH,PDV,"('1467', '1467')","405 states, 404 final states and 403 letters.",1,0.337398767471313
+tij_SFHH,,,"405 states, 404 final states and 403 letters.",,
+tij_InVS15,Abstraction-based,"('574', '779')","219 states, 218 final states and 217 letters.",87,621.448924303055
+tij_InVS15,PDV,"('574', '447')","219 states, 218 final states and 217 letters.",2,1.11908650398254
+tij_InVS15,,,"219 states, 218 final states and 217 letters.",,

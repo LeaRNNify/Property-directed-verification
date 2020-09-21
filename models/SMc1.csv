@@ -1,0 +1,8 @@
+Model name,Technique,Counterexample,Specification,Extracted DFA size,Total Time
+scc2034_kilifi_all_contacts_across_households,Statistical,"('E10', 'E5', 'F10')","30 states, 29 final states and 28 letters.",,0.3070535659790039
+tij_InVS,Statistical,"('533', '209')","94 states, 93 final states and 92 letters.",,0.2301802635192871
+highschool_2011,Statistical,"('51', '113', '71', '77', '93')","128 states, 127 final states and 126 letters.",,0.33475446701049805
+detailed_list_of_contacts_Hospital,Statistical,"('1702', '1193', '1205', '1378', '1144', '1784', '1108')","77 states, 76 final states and 75 letters.",,0.24107789993286133
+scc2034_kilifi_all_contacts_within_households,Statistical,"('H49', 'E6')","77 states, 76 final states and 75 letters.",,0.28231024742126465
+tij_SFHH,Statistical,"('1806', '1541', '1537', '1804', '1595', '1696', '1597', '1916', '1644', '1542', '1434', '1577', '1757', '1491', '1886', '1661', '1803', '1692', '1721', '1836', '1633', '1808', '1510', '1711', '1460', '1740', '1630', '1661', '1499', '1613', '1633', '1558', '1807', '1441', '1902', '1866', '1761', '1576', '1430', '1759', '1564', '1830', '1708', '1915', '1728', '1727', '1595', '1475', '1495', '1811', '1870', '1875', '1819', '1618', '1870', '1626', '1427', '1756', '1505', '1893', '1673', '1902', '1675', '1513', '1459', '1899', '1759', '1546', '1434', '1871', '1669')","405 states, 404 final states and 403 letters.",,1.511714220046997
+tij_InVS15,Statistical,"('447', '889', '771')","219 states, 218 final states and 217 letters.",,0.48664259910583496

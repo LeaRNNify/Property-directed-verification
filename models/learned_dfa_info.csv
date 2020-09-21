@@ -1,0 +1,4 @@
+Model name,Technique,Counterexample,Specification,Extracted DFA size,Total Time
+scc2034_kilifi_all_contacts_across_households,Abstraction-based,"('E23', 'E2')","30 states, 29 final states and 28 letters.",248,602.0811259746552
+scc2034_kilifi_all_contacts_across_households,PDV,"('E23', 'E2')","30 states, 29 final states and 28 letters.",3,0.012948989868164062
+scc2034_kilifi_all_contacts_across_households,,,"30 states, 29 final states and 28 letters.",,
