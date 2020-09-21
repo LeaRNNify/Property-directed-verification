@@ -1,8 +1,0 @@
-Model name,Technique,Counterexample,Specification,Extracted DFA size,Total Time
-scc2034_kilifi_all_contacts_across_households,Statistical,"('E10', 'F10')","30 states, 29 final states and 28 letters.",,0.2925553321838379
-tij_InVS,Statistical,"('102', '118', '113', '87')","94 states, 93 final states and 92 letters.",,0.24264073371887207
-highschool_2011,Statistical,"('115', '17', '68')","128 states, 127 final states and 126 letters.",,0.2722339630126953
-detailed_list_of_contacts_Hospital,Statistical,"('1702', '1365', '1196', '1327', '1202', '1191', '1205', '1144', '1142', '1547', '1332', '1395', '1116', '1702', '1142', '1205', '1660', '1378', '1114', '1098', '1190', '1416', '1152')","77 states, 76 final states and 75 letters.",,0.3541707992553711
-scc2034_kilifi_all_contacts_within_households,Statistical,"('B27', 'H43')","77 states, 76 final states and 75 letters.",,0.2898983955383301
-tij_SFHH,Statistical,"('1603', '1468', '1816', '1606', '1590', '1568', '1825')","405 states, 404 final states and 403 letters.",,1.5401713848114014
-tij_InVS15,Statistical,"('725', '210', '486', '47', '117')","219 states, 218 final states and 217 letters.",,0.4883568286895752
