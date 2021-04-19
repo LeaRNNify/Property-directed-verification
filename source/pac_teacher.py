@@ -73,7 +73,7 @@ class PACTeacher(Teacher):
                     return None
 
                 batch = [random_word(self.model.alphabet) for _ in range(batch_size)]
-                for x, y, w in zip(self.model.is_words_in_batch(batch) > 0.5, [dfa.is_word_in(w) for w in batch],
+                for x, y, w in zip(self.model.is_words_in_batch(batch), [dfa.is_word_in(w) for w in batch],
                                    batch):
                     if x and (not y):
                         return w
