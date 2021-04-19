@@ -10,7 +10,7 @@ from teacher import Teacher
 
 class PACTeacher(Teacher):
 
-    def __init__(self, model: DFA, epsilon=0.001, delta=0.001):
+    def __init__(self, model, epsilon=0.001, delta=0.001):
 
         assert ((epsilon <= 1) & (delta <= 1))
         Teacher.__init__(self, model)
@@ -24,6 +24,9 @@ class PACTeacher(Teacher):
 
         self.is_counter_example_in_batches = isinstance(self.model, RNNLanguageClasifier)
 
+        self.timeout = 600
+        self.start_time = 0
+
     def equivalence_query(self, dfa: DFA):
         """
         Tests whether the dfa is equivalent to the model by testing random words.
@@ -36,6 +39,8 @@ class PACTeacher(Teacher):
         self._num_equivalence_asked = self._num_equivalence_asked + 1
 
         if self.is_counter_example_in_batches:
+            if time.time() - self.start_time > self.timeout:
+                return
             batch_size = 200
             for i in range(int(number_of_rounds / batch_size) + 1):
                 batch = [random_word(self.model.alphabet) for _ in range(batch_size)]
@@ -57,7 +62,7 @@ class PACTeacher(Teacher):
         Tests whether the model language is a subset of the dfa language by testing random words.
         If not subset returns an example
         """
-
+        # print("checking subset")
         number_of_rounds = int(
             (1 / self.epsilon) * (np.log(1 / self.delta) + np.log(2) * (self._num_equivalence_asked + 1)))
         self._num_equivalence_asked = self._num_equivalence_asked + 1
@@ -65,11 +70,16 @@ class PACTeacher(Teacher):
         if isinstance(self.model, RNNLanguageClasifier):
             batch_size = 200
             for i in range(int(number_of_rounds / batch_size) + 1):
+                if time.time() - self.start_time > self.timeout:
+                    return None
+
                 batch = [random_word(self.model.alphabet) for _ in range(batch_size)]
                 for x, y, w in zip(self.model.is_words_in_batch(batch) > 0.5, [dfa.is_word_in(w) for w in batch],
                                    batch):
                     if x and (not y):
+                        # print("found mistake subset")
                         return w
+            # print("done subset")
             return None
 
         else:
@@ -83,44 +93,49 @@ class PACTeacher(Teacher):
         return self.model.is_word_in(word)
 
     def teach(self, learner, timeout=600):
+        self.timeout = timeout
+        self.start_time = time.time()
         self._num_equivalence_asked = 0
         learner.teacher = self
         i = 60
-        start_time = time.time()
         while True:
-            if time.time() - start_time > timeout:
-                print("Timeout")
+            if time.time() - self.start_time > self.timeout:
                 return
-            if time.time() - start_time > i:
+            if time.time() - self.start_time > i:
                 i += 60
                 print("AAMC - {} time has passed from starting AAMC, DFA is currently of size {}".format(
-                    time.time() - start_time, len(learner.dfa.states)))
+                    time.time() - self.start_time, len(learner.dfa.states)))
 
             counter = self.equivalence_query(learner.dfa)
             if counter is None:
                 break
-            num_of_ref = learner.new_counterexample(counter, self.is_counter_example_in_batches)
+            num_of_ref = learner.new_counterexample(counter, self.is_counter_example_in_batches,
+                                                    timeout=self.timeout - time.time() + self.start_time)
             self._num_equivalence_asked += num_of_ref
 
     def check_and_teach(self, learner, checker, timeout=600):
+        self.timeout = timeout
         learner.teacher = self
         self._num_equivalence_asked = 0
-        start_time = time.time()
+        self.start_time = time.time()
         i = 60
         while True:
-            if time.time() - start_time > timeout:
+            # print(self._num_equivalence_asked)
+            # print(time.time() - self.start_time)
+            if time.time() - self.start_time > self.timeout:
                 return
-            if time.time() - start_time > i:
+            if time.time() - self.start_time > i:
                 i += 60
                 print("PDV - {} time has passed from starting PDV, DFA is currently of size {}".format(
-                    time.time() - start_time, len(learner.dfa.states)))
+                    time.time() - self.start_time, len(learner.dfa.states)))
             # Searching for counter examples in the spec:
             counter_example = checker.check_for_counterexample(learner.dfa)
 
             if counter_example is not None:
                 if not self.model.is_word_in(counter_example):
                     self._num_equivalence_asked += 1
-                    num = learner.new_counterexample(counter_example, self.is_counter_example_in_batches)
+                    num = learner.new_counterexample(counter_example, self.is_counter_example_in_batches,
+                                                     timeout=self.timeout - time.time() + self.start_time)
                     if num > 1:
                         self._num_equivalence_asked += num - 1
                 else:

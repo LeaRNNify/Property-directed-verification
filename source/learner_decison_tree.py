@@ -1,5 +1,6 @@
 from graphviz import Digraph
 
+import time
 from dfa import DFA
 from learner import Learner
 
@@ -98,7 +99,7 @@ class DecisionTreeLearner(Learner):
 
             if self.prev_examples.setdefault(word + current_node.name,
                                              self.teacher.membership_query(word + current_node.name)):
-            # if self.teacher.membership_query(word + current_node.name):
+                # if self.teacher.membership_query(word + current_node.name):
                 current_node = current_node.right
             else:
                 current_node = current_node.left
@@ -174,13 +175,15 @@ class DecisionTreeLearner(Learner):
 
         return DFA(tuple(""), final_nodes, transitions)
 
-    def new_counterexample(self, word, do_hypothesis_in_batches=False,max_refinements=20):
+    def new_counterexample(self, word, do_hypothesis_in_batches=False, max_refinements=20, timeout=9999999):
         val = self.dfa.is_word_in(word)
         numb_of_refinements = 1
-        l =[]
+        l = []
+        start_time = time.time()
         while self.dfa.is_word_in(word) == val:
-            if numb_of_refinements > max_refinements:
+            if (time.time() - start_time > timeout) or (numb_of_refinements > max_refinements):
                 return numb_of_refinements
+
             new_state_string = None
 
             numb_of_refinements += 1

@@ -39,23 +39,23 @@ FIELD_NAMES = ["alph_len",
 def write_csv_header(filename, fieldnames=None):
     if fieldnames is None:
         fieldnames = FIELD_NAMES
-    with open(filename, mode='a') as employee_file:
-        writer = csv.DictWriter(employee_file, fieldnames=fieldnames)
+    with open(filename, mode='a') as summary_csv:
+        writer = csv.DictWriter(summary_csv, fieldnames=fieldnames)
         writer.writeheader()
 
 
 def write_line_csv(filename, benchmark, fieldnames=None):
     if fieldnames is None:
         fieldnames = FIELD_NAMES
-    with open(filename, mode='a') as benchmark_summary:
-        writer = csv.DictWriter(benchmark_summary, fieldnames=fieldnames)
+    with open(filename, mode='a') as summary_csv:
+        writer = csv.DictWriter(summary_csv, fieldnames=fieldnames)
         writer.writerow(benchmark)
 
 
 def minimize_dfa(dfa: DFA) -> DFA:
-    teacher_pac = ExactTeacher(dfa)
-    student = DecisionTreeLearner(teacher_pac)
-    teacher_pac.teach(student)
+    teacher_exact = ExactTeacher(dfa)
+    student = DecisionTreeLearner(teacher_exact)
+    teacher_exact.teach(student)
     return student.dfa
 
 
@@ -72,6 +72,7 @@ def check_rnn_acc_to_spec_only_mc(rnn, spec, benchmark, timeout=900, delta=0.000
 
     rnn.num_of_membership_queries = 0
     start_time = time.time()
+    # print(spec[0].specification)
     counter_extract_w_spec = teacher_pac.check_and_teach(student, spec[0], timeout=timeout)
     benchmark.update({"PDV_time": "{:.3}".format(time.time() - start_time)})
     dfa_extract_w_spec = student.dfa
@@ -224,13 +225,14 @@ def check_for_loops(prefix, loop, suffix, dfa_spec, rnn, flawed_flow):
 def rand_pregenerated_benchmarks(check_flows=True, timeout=600, delta=0.0005, epsilon=0.0005):
     print("Start random benchmarks")
     first_entry = True
-    folder_main = "../models/rand"
+    folder_main = "../models/rands"
     summary_csv = "../results/summary_rand_model_checking.csv"
     for folder in os.walk(folder_main):
         if os.path.isfile(folder[0] + "/meta"):
             name = folder[0].split('/')[-1]
             print("Loading RNN in :\"{}\"".format(folder[0]))
             rnn = RNNLanguageClasifier().load_lstm(folder[0])
+            print(folder)
             # Loads specification dfa in the folder and checks whether
             # the rnn is compliant.
             for file in os.listdir(folder[0]):
@@ -255,8 +257,8 @@ def rand_pregenerated_benchmarks(check_flows=True, timeout=600, delta=0.0005, ep
                             print("---------------------------------------------------\n"
                                   "-------------Checking for faulty flows-------------\n"
                                   "---------------------------------------------------\n")
-                            flawed_flows = []
                             flawed_flow_cross_product(counter, dfa_extracted, dfa_spec, flawed_flows, rnn)
+
                         benchmark.update({"flawed_flows": flawed_flows})
 
                     if first_entry:
