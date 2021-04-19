@@ -371,7 +371,7 @@ def train_contact_sequence_RNN():
 							save_dir=data_dir)
 
 
-check_contact_sequence_RNN()
+# check_contact_sequence_RNN()
 '''
 if __name__ == "__main__":
 	main()
