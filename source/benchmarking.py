@@ -225,14 +225,13 @@ def check_for_loops(prefix, loop, suffix, dfa_spec, rnn, flawed_flow):
 def rand_pregenerated_benchmarks(check_flows=True, timeout=600, delta=0.0005, epsilon=0.0005):
     print("Start random benchmarks")
     first_entry = True
-    folder_main = "../models/rands"
+    folder_main = "../models/rand"
     summary_csv = "../results/summary_rand_model_checking.csv"
     for folder in os.walk(folder_main):
         if os.path.isfile(folder[0] + "/meta"):
             name = folder[0].split('/')[-1]
             print("Loading RNN in :\"{}\"".format(folder[0]))
             rnn = RNNLanguageClasifier().load_lstm(folder[0])
-            print(folder)
             # Loads specification dfa in the folder and checks whether
             # the rnn is compliant.
             for file in os.listdir(folder[0]):

@@ -62,7 +62,6 @@ class PACTeacher(Teacher):
         Tests whether the model language is a subset of the dfa language by testing random words.
         If not subset returns an example
         """
-        # print("checking subset")
         number_of_rounds = int(
             (1 / self.epsilon) * (np.log(1 / self.delta) + np.log(2) * (self._num_equivalence_asked + 1)))
         self._num_equivalence_asked = self._num_equivalence_asked + 1
@@ -77,9 +76,7 @@ class PACTeacher(Teacher):
                 for x, y, w in zip(self.model.is_words_in_batch(batch) > 0.5, [dfa.is_word_in(w) for w in batch],
                                    batch):
                     if x and (not y):
-                        # print("found mistake subset")
                         return w
-            # print("done subset")
             return None
 
         else:
@@ -120,8 +117,6 @@ class PACTeacher(Teacher):
         self.start_time = time.time()
         i = 60
         while True:
-            # print(self._num_equivalence_asked)
-            # print(time.time() - self.start_time)
             if time.time() - self.start_time > self.timeout:
                 return
             if time.time() - self.start_time > i:
