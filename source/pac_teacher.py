@@ -2,7 +2,7 @@ import time
 
 import numpy as np
 
-from dfa import DFA
+from dfa import DFA, complement
 from modelPadding import RNNLanguageClasifier
 from random_words import random_word
 from teacher import Teacher
@@ -86,6 +86,34 @@ class PACTeacher(Teacher):
                     return word
             return None
 
+    def model_subset_of_dfa_query_adv(self, dfa: DFA, start_time, timeout):
+        """
+        Tests whether the model language is a subset of the dfa language by testing random words.
+        If not subset returns an example
+        """
+
+        number_of_rounds = int(
+            (1 / self.epsilon) * (np.log(1 / self.delta) + np.log(2) * (self._num_equivalence_asked + 1)))
+        self._num_equivalence_asked = self._num_equivalence_asked + 1
+
+        if isinstance(self.model, RNNLanguageClasifier):
+            batch_size = 500
+            for i in range(int(number_of_rounds / batch_size) + 1):
+                if time.time() - start_time > timeout:
+                    return None
+                batch = []
+                for _ in range(batch_size):
+                    word = random_word(self.model.alphabet)
+                    if len(word) < 30:
+                        batch.append(word)
+                batch = [random_word(self.model.alphabet) for _ in range(batch_size)]
+                print(type(batch[50]))
+                for x, y, w in zip(self.model.is_words_in_batch(batch) > 0.5, [dfa.is_word_in(w) for w in batch],
+                                   batch):
+                    if (x and (not y)) or ((not x) and y):
+                        return w
+            return None
+
     def membership_query(self, word):
         return self.model.is_word_in(word)
 
@@ -147,3 +175,58 @@ class PACTeacher(Teacher):
                                                                       self.is_counter_example_in_batches)
                     if num_equivalence_used > 1:
                         self._num_equivalence_asked += num_equivalence_used - 1
+
+    def adv_robustness(self, learner, neighbourhoodNFA, is_positive_word, timeout=600): 
+        learner.teacher = self
+        self._num_equivalence_asked = 0
+        start_time = time.time()
+        i = 5
+        while True:
+            if time.time() - start_time > timeout:
+                print("Process TIMEOUT")
+                return
+            
+            #if time.time() - start_time > i:
+            #    i += 5
+            #    print("PDV - {} time has passed from starting PDV, DFA is currently of size {}".format(
+            #        time.time() - start_time, len(learner.dfa.states)))
+            
+            # Searching for adversarial example in the spec:
+            if is_positive_word:
+                print("Now, checking inclusion of neighbourhoodNFA of size %d and DFA of size %d"%(len(neighbourhoodNFA.states), len(learner.dfa.states)))
+                adversarial_example = neighbourhoodNFA.inclusion(learner.dfa)
+            else:
+                print("Now, checking inclusion of neighbourhoodNFA of size %d and DFA of size %d"%(len(neighbourhoodNFA.states), len(learner.dfa.states)))
+                adversarial_example = neighbourhoodNFA.inclusion(complement(learner.dfa))
+
+
+
+            if adversarial_example is not None:
+                
+                if self.model.is_word_in(adversarial_example) != learner.dfa.is_word_in(adversarial_example):
+                    print("******Adversarial Example found but RNN and DFA do not match******")
+                    self._num_equivalence_asked += 1
+                    num = learner.new_counterexample(adversarial_example, self.is_counter_example_in_batches)
+                    if num > 1:
+                        self._num_equivalence_asked += num - 1
+                else:
+                    print("******Adversarial Example of length %d found******"%(len(adversarial_example))) 
+                    return adversarial_example
+
+            # Searching for counter examples in the the model:
+            else:
+                print("--------Adversarial Example not found in this round--------")
+                # Equivalence check
+                counter_example = self.model_subset_of_dfa_query_adv(learner.dfa, start_time, timeout)
+                print("counterexample: " + str(counter_example))
+                if counter_example is None:
+                    return None
+                else:
+                    num_equivalence_used = learner.new_counterexample(counter_example,
+                                                                    self.is_counter_example_in_batches)
+                    if num_equivalence_used > 1:
+                        self._num_equivalence_asked += num_equivalence_used - 1
+            print(self._num_equivalence_asked)
+
+
+    

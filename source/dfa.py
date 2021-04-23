@@ -421,3 +421,66 @@ class DFANoisy(DFA):
         else:
             self.known_mistakes.update({word: label})
             return label
+
+def intersection_dfa_nfa(dfa, nfa):
+    if dfa.alphabet != nfa.alphabet:
+        raise Exception("The two DFAs have different alphabets")
+
+    new_states = [(state1, state2) for state1 in dfa.states for state2 in nfa.states]
+    new_init_states = (dfa.init_state, nfa.init_state)
+    new_final_states = [(state1, state2) for state1 in dfa.final_states for state2 in nfa.final_states]
+    new_transitions = {}
+    for (state1, state2) in new_states:
+        new_transitions[(state1, state2)] = {
+            letter: [(dfa.transitions[state1][letter], nfa_state) for nfa_state in nfa.transitions[state2][letter]] for letter in
+            dfa.alphabet}
+
+    new_dfa = DFA(new_init_states, new_final_states, new_transitions)
+
+    return new_dfa
+
+
+def complement(dfa: DFA):
+
+    final_states = [s for s in dfa.states if s not in dfa.final_states]
+    dfa_complement = DFA(dfa.init_state, final_states, dfa.transitions)
+    return dfa_complement
+
+
+
+def num_of_accepting_words(dfa: DFA):
+
+    all_words = generate_all_accepting_words(dfa)
+    if all_words == None:
+        return float('inf')
+    else:
+        return len(all_words)
+
+
+
+def generate_all_accepting_words(dfa):
+    return generate_accepting_words(dfa, dfa.init_state)
+
+
+def generate_accepting_words(dfa:DFA, state):
+
+    all_words = []
+    if state in dfa.final_states:
+        all_words = ['']
+
+    for letter in dfa.alphabet:
+        successor_states = dfa.transitions[state][letter]
+
+        if isinstance(successor_states, int):
+            for word in generate_accepting_words(dfa, successor_states):
+                if len(word)+1>len(dfa.states):
+                    return None
+                all_words.append(letter+word)
+        else:
+            for next_state in successor_states:
+                for word in generate_accepting_words(dfa, next_state):
+                    if len(word)+1>len(dfa.states):
+                        return None
+                    all_words.append(letter+word)
+
+    return all_words
